@@ -1,0 +1,432 @@
+---
+title: "Stats525HW7"
+author: "Luke Geel"
+date: "3/23/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+2.4
+a. Obtain a 99 percent confidence interval for b1. Interpret your confidence interval. Does it
+include rero? Why might the director of admissions be interested in whether the confidence
+interval includes zero?
+CI:(0.00175,0.094787) This means that we can be 95% confident that for every increase in GPA, the ACT score will increase by between 0.00175 and 0.094787. This does not include zero. The director would be interseted in whether the confidence interval includes zero because if it did then there might not be a correlatin between ACT scores and GPA.
+```{r}
+library(tidyverse)
+loadRData <- function(fileName){
+  load(fileName)
+  get(ls()[ls() != "fileName"])
+}
+gpa <- loadRData("/Users/lukegeel/Downloads/gpa_spring2021.RData")
+n <- nrow(gpa) 
+y <- gpa$Y 
+x <- gpa$X 
+linmod <- lm(y~x) 
+b1 <- linmod$coef[2]
+s.b1 <- summary(linmod)$coef[2, 2]
+alpha <- 0.01
+qt <- qt(alpha/2, n - 2)
+pvalue <- pt(-abs(b1/s.b1),n-2)+(1-pt(abs(b1/s.b1),n-2))
+lower <- b1+s.b1*qt(alpha/2,n-2)
+upper <- b1-s.b1*qt(alpha/2,n-2)
+lower
+upper
+```
+b. Test, using the test statistic t*, whether or not a linear association exists between student's
+ACT score (X) and GPA at the end of the freshman year (Y). Use a level of significance of
+.Ol. State the alternatives, decision rule, and conclusion.
+Alternative hypothesis: There is no linear association between student's ACT score and GPA at the end of the freshman year.
+Decision rule: If the test statistic exceeds the t-value given the alpha level, we reject the alternative hypothesis.
+Conclusion: The test statistci exceeds t, so we can reject the alternative hypothesis and conclude that there is a linear association between ACT scores and GPA.
+```{r}
+library(tidyverse)
+loadRData <- function(fileName){
+  load(fileName)
+  get(ls()[ls() != "fileName"])
+}
+gpa <- loadRData("/Users/lukegeel/Downloads/gpa_spring2021.RData")
+n <- nrow(gpa) 
+y <- gpa$Y 
+x <- gpa$X 
+linmod <- lm(y~x) 
+b1 <- linmod$coef[2]
+s.b1 <- summary(linmod)$coef[2, 2]
+alpha <- 0.01
+tquantile <- qt(1 - alpha/2, n - 2)
+statistic <- b1/s.b1
+tquantile
+statistic
+```
+c. What is the P-value of your test in part (b)? How does it support the conclusion reached in
+part (b)? 
+P-value: 0.007   The P-value is less than the alpha level so it supports our conclusion that a linear association exists.
+```{r}
+library(tidyverse)
+loadRData <- function(fileName){
+  load(fileName)
+  get(ls()[ls() != "fileName"])
+}
+gpa <- loadRData("/Users/lukegeel/Downloads/gpa_spring2021.RData")
+n <- nrow(gpa) 
+y <- gpa$Y 
+x <- gpa$X 
+linmod <- lm(y~x) 
+b1 <- linmod$coef[2]
+s.b1 <- summary(linmod)$coef[2, 2]
+alpha <- 0.01
+tquantile <- qt(1 - alpha/2, n - 2)
+pvalue <- 2*pt(-abs(b1/s.b1), n - 2)
+pvalue
+
+```
+
+2.5. Refer to Copier maintenance Problem 1.20.
+a. Estimate the change in the mean service time when the number of copiers serviced increases
+by one. Use a 90 percent confidence interval. Interpret your confidence interval.
+We can be 90% confident that when the number of copiers serviced increases by one, the service time increases by between 14.0258 and 16.08582 minutes.
+```{r}
+data <- loadRData("/Users/lukegeel/Downloads/copier_spring2021.RData")
+n <- nrow(data) 
+y <- data$Y 
+x <- data$X 
+linmod <- lm(y~x) 
+b1 <- linmod$coef[2]
+s.b1 <- summary(linmod)$coef[2, 2]
+alpha <- 0.1
+qt <- qt(alpha/2, n - 2)
+pvalue <- pt(-abs(b1/s.b1),n-2)+(1-pt(abs(b1/s.b1),n-2))
+lower <- b1+s.b1*qt(alpha/2,n-2)
+upper <- b1-s.b1*qt(alpha/2,n-2)
+lower
+upper
+```
+b. Conduct a t test to determine whether or not there is a linear association between X and Y
+here; control the alpha risk at .10. State the alternatives, decision rule, and conclusion. What is
+the P-value of your test?
+Alternative hypothesis: There is not a linear association between X and Y.
+Decision rule: If the test statistic exceeds the t-value given the alpha level, we reject the alternative hypothesis.
+Conclusion: The test statistic doesn't exceed t, so we fail to reject the alternative hypothesis and say that there isn't a linear association between X and Y.
+P-value: 6.093652e-27 
+```{r}
+data <- loadRData("/Users/lukegeel/Downloads/copier_spring2021.RData")
+n <- nrow(data) 
+y <- data$Y 
+x <- data$X 
+linmod <- lm(y~x) 
+b1 <- linmod$coef[2]
+s.b1 <- summary(linmod)$coef[2, 2]
+alpha <- 0.1
+tquantile <- qt(1 - alpha/2, n - 2)
+statistic <- b1/s.b1
+pvalue <- 2*pt(-abs(b1/s.b1), n - 2)
+pvalue
+tquantile
+statistic
+```
+c. Are your results in parts (a) and (b) consistent? Explain.
+No, the results aren't consistent. From a, we get there the mean change is about 15 minutes for each additional copier but from b we concluded that there isn;t a linear relationship. These results contradict each other.
+```{r}
+```
+e. Does bo give any relevant information here about the "start-up" time on calls-Le., about
+the time required before service work is begun on the copiers at a customer location?
+No, b0 does not give any relevant information about the start-up time on calls.
+```{r}
+
+```
+
+1.44. Refer to the CDI data set in Appendix C.2.
+a. For each geographic region, regress per capita income in a CDr (Y) against the percentage of individuals in a county having at least a bachelor's degree (X). Assume that first-order regression model (1.1) is appropriate for each region. State the estimated regression functions.
+Region 1: 9223.8 + 522.2X
+Region 2: 13581.4 + 238.7X
+Region 3: 10529.8 + 330.6
+Region 4: 8615.1 + 440.3X
+```{r}
+cdi <- loadRData("/Users/lukegeel/Downloads/cdi_spring2021.RData")
+region1 <- cdi%>%filter(X17 == 1)
+n <- nrow(region1)
+Y <- region1$X15 
+X <- region1$X12 
+linmod1 <- lm(Y~X)
+linmod1
+region2 <- cdi%>%filter(X17 == 2)
+n <- nrow(region2)
+Y <- region2$X15 
+X <- region2$X12 
+linmod2 <- lm(Y~X)
+linmod2
+region3 <- cdi%>%filter(X17 == 3)
+n <- nrow(region3)
+Y <- region3$X15 
+X <- region3$X12 
+linmod3 <- lm(Y~X)
+linmod3
+region4 <- cdi%>%filter(X17 == 4)
+n <- nrow(region4)
+Y <- region4$X15 
+X <- region4$X12 
+linmod4 <- lm(Y~X)
+linmod4
+
+```
+b. Are the estimated regression functions similar for the four regions? Discuss.
+Yes, the estimated regression functions are relatively similar for all four regions. The intercepts are all between 8000 and 14000 and the slope of X are all between 230 and 520.
+```{r}
+
+```
+c. Calculate MSE for each region. Is the variability· around the fitted regression line approximately the same for the four regions? Discuss. 
+Region 1 MSE: 7335008
+Region 2 MSE: 4411341
+Region 3 MSE: 7474349
+Region 4 MSE: 8214318
+I believe that the variability around the fitted regression line is approximately the same for the four regions as all the MSEs are very large, all between 4 and 8 million.
+```{r}
+loadRData("/Users/lukegeel/Downloads/cdi_spring2021.RData")
+s1 <- summary(linmod1)$s
+s1^2
+s2 <- summary(linmod2)$s
+s2^2
+s3 <- summary(linmod3)$s
+s3^2
+s4 <- summary(linmod4)$s
+s4^2
+
+```
+
+2.63 Refer to the CDI data set in Appendix C.2 and Project l.44. Obtain a separate interval estimate
+of b1, for each region. Use a 90 percent confidence coefficient in each case. Do the regression
+lines for the different regions appear to have similar slopes?
+Region 1 b1 CI: (460.5177,583.8)
+Region 2 b1 CI: (193.4858,283.853)
+Region 3 b1 CI: (285.7076,375.5158)
+Region 4 b1 CI: (364.7585,515.8729)
+Yes, the regression lines for the different regions appear to have similar slopes.
+```{r}
+n <- nrow(region1)
+Y <- region1$X15 
+X <- region1$X12 
+linmod1 <- lm(Y~X)
+b1 <- linmod1$coef[2]
+s.b1 <- summary(linmod1)$coef[2, 2]
+alpha <- 0.1
+qt <- qt(alpha/2, n - 2)
+pvalue <- pt(-abs(b1/s.b1),n-2)+(1-pt(abs(b1/s.b1),n-2))
+lower <- b1+s.b1*qt(alpha/2,n-2)
+upper <- b1-s.b1*qt(alpha/2,n-2)
+lower
+upper
+```
+```{r}
+n <- nrow(region2)
+Y <- region2$X15 
+X <- region2$X12 
+linmod2 <- lm(Y~X)
+b1 <- linmod2$coef[2]
+s.b1 <- summary(linmod2)$coef[2, 2]
+alpha <- 0.1
+qt <- qt(alpha/2, n - 2)
+pvalue <- pt(-abs(b1/s.b1),n-2)+(1-pt(abs(b1/s.b1),n-2))
+lower <- b1+s.b1*qt(alpha/2,n-2)
+upper <- b1-s.b1*qt(alpha/2,n-2)
+lower
+upper
+```
+```{r}
+n <- nrow(region3)
+Y <- region3$X15 
+X <- region3$X12 
+linmod3 <- lm(Y~X)
+b1 <- linmod3$coef[2]
+s.b1 <- summary(linmod3)$coef[2, 2]
+alpha <- 0.1
+qt <- qt(alpha/2, n - 2)
+pvalue <- pt(-abs(b1/s.b1),n-2)+(1-pt(abs(b1/s.b1),n-2))
+lower <- b1+s.b1*qt(alpha/2,n-2)
+upper <- b1-s.b1*qt(alpha/2,n-2)
+lower
+upper
+```
+```{r}
+n <- nrow(region4)
+Y <- region4$X15 
+X <- region4$X12 
+linmod4 <- lm(Y~X)
+b1 <- linmod4$coef[2]
+s.b1 <- summary(linmod4)$coef[2, 2]
+alpha <- 0.1
+qt <- qt(alpha/2, n - 2)
+pvalue <- pt(-abs(b1/s.b1),n-2)+(1-pt(abs(b1/s.b1),n-2))
+lower <- b1+s.b1*qt(alpha/2,n-2)
+upper <- b1-s.b1*qt(alpha/2,n-2)
+lower
+upper
+```
+
+6.29. Refer to the CDI data set in Appendix C.2.
+a. For each geographic region, regress the number of serious crimes in a CDI (Y) against
+population density (X" total population divided by land area), per capita personal income
+(X2 ), and percent high school graduates (X3 ). Use first-order regression model (6.5) with
+three predictor variables. State the estimated regression functions.
+Region 1: Y = -64466.231 + 17.383X1 - 1.406X2 + 1182.577X3
+Region 2: Y = -4163.2673 + 33.6193X1 + 0.1024X2 - 2.7616X3
+Region 3: Y = 38862.667 + 5.537 + 1.957X2 - 670.884X3
+Region 4: Y = 129323.415 + 5.717X1 + 4.342X2 - 2159.920X3
+```{r}
+region1 <- cdi%>%filter(X17 == 1)
+n <- nrow(region1)
+Y <- region1$X10 
+X1 <- region1$X5/region1$X4
+X2 <- region1$X15 
+X3 <- region1$X11 
+linmod1 <- lm(Y~X1+X2+X3)
+linmod1
+region2 <- cdi%>%filter(X17 == 2)
+n <- nrow(region2)
+Y <- region2$X10 
+X1 <- region2$X5/region2$X4
+X2 <- region2$X15 
+X3 <- region2$X11 
+linmod2 <- lm(Y~X1+X2+X3)
+linmod2
+region3 <- cdi%>%filter(X17 == 3)
+n <- nrow(region3)
+Y <- region3$X10 
+X1 <- region3$X5/region3$X4
+X2 <- region3$X15 
+X3 <- region3$X11 
+linmod3 <- lm(Y~X1+X2+X3)
+linmod3
+region4 <- cdi%>%filter(X17 == 4)
+n <- nrow(region4)
+Y <- region4$X10 
+X1 <- region4$X5/region4$X4
+X2 <- region4$X15 
+X3 <- region4$X11 
+linmod4 <- lm(Y~X1+X2+X3)
+linmod4
+```
+b. Are the estimated regression functions similar for the four regions? Discuss.
+No, the estimated regression functions are not similar for the four regions. The intercepts are a wide range, some positive some negative. Also, the coefficients aren't always all positive and negative, they are different for each region.
+```{r}
+```
+c. Calculate MSE and R2 for each region. Are these measures similar for the four regions?
+Discuss.
+Region 1: MSE: 787397480 R2: 0.8352049
+Region 2: MSE: 1087623839 R2: 0.5285125
+Region 3: MSE: 1367108167 R2: 0.09250839
+Region 4: MSE: 6694591439 R2: 0.08665358
+These measurements are not all similar for the four regions. The R2 values range form 0.83 to 0.08 so some are good fits some aren't.
+```{r}
+region1 <- cdi%>%filter(X17 == 1)
+n <- nrow(region1)
+Y <- region1$X10 
+X1 <- region1$X5/region1$X4
+X2 <- region1$X15 
+X3 <- region1$X11 
+linmod1 <- lm(Y~X1+X2+X3)
+#linmod1
+region2 <- cdi%>%filter(X17 == 2)
+n <- nrow(region2)
+Y <- region2$X10 
+X1 <- region2$X5/region2$X4
+X2 <- region2$X15 
+X3 <- region2$X11 
+linmod2 <- lm(Y~X1+X2+X3)
+#linmod2
+region3 <- cdi%>%filter(X17 == 3)
+n <- nrow(region3)
+Y <- region3$X10 
+X1 <- region3$X5/region3$X4
+X2 <- region3$X15 
+X3 <- region3$X11 
+linmod3 <- lm(Y~X1+X2+X3)
+#linmod3
+region4 <- cdi%>%filter(X17 == 4)
+n <- nrow(region4)
+Y <- region4$X10 
+X1 <- region4$X5/region4$X4
+X2 <- region4$X15 
+X3 <- region4$X11 
+linmod4 <- lm(Y~X1+X2+X3)
+#linmod4
+s1 <- summary(linmod1)$s
+r.sq1 <- summary(linmod1)$r.sq
+s1^2
+r.sq1
+s2 <- summary(linmod2)$s
+r.sq2 <- summary(linmod2)$r.sq
+s2^2
+r.sq2
+s3 <- summary(linmod3)$s
+r.sq3 <- summary(linmod3)$r.sq
+s3^2
+r.sq3
+s4 <- summary(linmod4)$s
+r.sq4 <- summary(linmod4)$r.sq
+r.sq4
+s4^2
+```
+
+628. Refer to the CDI data set in Appendix C.2. You have been asked to evaluate two alternative
+models for predicting the number of acti ve physicians (Y) in a CD!. Proposed model I includes
+as predictor variables total population (X I), land area (X2 ), and total personal income (X}).
+Proposed model II includes as predictor vcu-iables population density (X I, total population
+divided by land area), percent of population greatef'lhan 64 years old (X2 ), and total personal
+income (X}).
+(a)Obtain a point estimate and 90% confidence interval for β1 under a normal errors linear regression
+model that uses the number of active physicians in a CDI (Y ) as a response and total population (X1)
+as a predictor.
+CI: (0.002762953, 0.002928969)
+```{r}
+n <- nrow(cdi)
+Y <- cdi$X8 
+X <- cdi$X5 
+linmod <- lm(Y~X)
+b1 <- linmod$coef[2]
+s.b1 <- summary(linmod)$coef[2, 2]
+alpha <- 0.1
+qt <- qt(alpha/2, n - 2)
+pvalue <- pt(-abs(b1/s.b1),n-2)+(1-pt(abs(b1/s.b1),n-2))
+lower <- b1+s.b1*qt(alpha/2,n-2)
+upper <- b1-s.b1*qt(alpha/2,n-2)
+lower
+upper
+```
+(b) Obtain a point estimate and 90% confidence interval for β1 under a normal errors linear regression
+model that uses the number of active physicians in a CDI (Y ) as a response and total population (X1),
+land area (X2), and total personal income (X3) as predictors.
+CI: (0.0004919585, 0.001485982)
+```{r}
+n <- nrow(cdi)
+Y <- cdi$X8 
+X1 <- cdi$X5 
+X2 <- cdi$X4
+X3 <- cdi$X16
+linmod <- lm(Y~X1+X2+X3)
+b1 <- linmod$coef[2]
+s.b1 <- summary(linmod)$coef[2, 2]
+alpha <- 0.1
+qt <- qt(alpha/2, n - 2)
+pvalue <- pt(-abs(b1/s.b1),n-2)+(1-pt(abs(b1/s.b1),n-2))
+lower <- b1+s.b1*qt(alpha/2,n-2)
+upper <- b1-s.b1*qt(alpha/2,n-2)
+lower
+upper
+```
+(c) Compare the interpretations of b1 in (a) and (c). Do they differ? If so, how?
+In part a, its predicting the number of physicians based soley on total population where as in part b they number of physicians is predicted by total population, land area, and total personal income. 
+
+(d) Compare the point estimates and 90% confidence intervals for β1 obtained in (a) and (b). Are they
+identical?
+They are not identical. The CI for part a is much smaller than part b. That means that when predicting the number of physicians using just the total population will produce more accurate results than using total population, land area, and total personal income.
+
+(e) Explain how what you observe in (d) makes sense given what you concluded in (c).
+Because we used more predictors in part b, the range of the CI would be larger as there are more variables in the prediction.
+
+
+
+
+
+

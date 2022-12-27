@@ -1,0 +1,280 @@
+---
+title: "HW11"
+author: "Luke Geel"
+date: "4/26/2021"
+output:
+  pdf_document: default
+  word_document: default
+  html_document: default
+---
+```{r}
+library(tidyverse)
+loadRData <- function(fileName){
+  load(fileName)
+  get(ls()[ls() != "fileName"])
+}
+```
+
+
+
+*3.5. Refer to Airfreight breakage Problem 1.21.
+```{r}
+breakage <- loadRData("/Users/lukegeel/Downloads/breakage_spring2021.RData")
+```
+b. The cases are given in time order. Prepare a time plot for the number of transfers. Is any
+systematic pattern evident in your plot? Discuss.
+Yes, based on the plot is appears as though as X increases, so does Y.
+```{r}
+X <- breakage$X
+Y <- breakage$Y
+plot(X,Y)
+```
+d. Plot the residuals ei against Xi to ascertain whether any departures from regression
+model (2.1) are evident. What is your conclusion?
+Based on the residual plot, there are some departures from the regression where it's evident that they don't aling with the model well. Both (0,7) and (3,21) have large residuals meaning they don't follow the model well.
+```{r}
+m1 <- lm(Y~X)
+m2 <- resid(m1)
+plot(X,m2)
+```
+f. Prepare a time plot of the residuals. What information is provided by your plot?
+A time plot of residuals indicated a linear or non-linear time-related trend effect. In this case it's a linear time-related effect.
+```{r}
+plot(m2)
+```
+
+
+3.6. Refer to Plastic hardness Problem 1.22
+b. Plot the residuals ei against the fitted values Y; to ascertain whether any departures from
+regression model (2.1) are evident. State your findings. 
+This plot is very interesting. There are 4 clusters, each with 3 or 4 points and it seems as though each cluster has 1 or 2 points with a residual near 0 and 1 point with a positive residual and 1 point with a negative residual. The point that's departed furthest from the model would be (32,228)
+```{r}
+plastic <- loadRData("/Users/lukegeel/Downloads/plastic_spring2021.RData")
+X <- plastic$X
+Y <- plastic$Y
+m1 <- lm(Y~X)
+m2 <- resid(m1)
+plot(Y,m2)
+```
+
+
+*3.17. Sales growth. A marketing researcher studied annual sales of a product that had been 
+introduced 10 years ago. The data are as follows, where X is the year (coded) and Y is sales in thousands 
+```{r}
+sales <- loadRData("/Users/lukegeel/Downloads/sales_spring2021.RData")
+
+```
+a. Prepare a scatter plot of the data. Does a linear relation appear adequate here?
+Yes, there appears to be a linear relationship.
+```{r}
+X <- sales$X
+Y <- sales$Y
+plot(X,Y, xlab = "Sales Year", ylab = "Sales (in thousands)")
+```
+c. Use the transformation Y' = sqrt(Y) and obtain the estimated linear regression function for the transformed data.
+sqrt(Y)= 1.933X + 6.258
+```{r}
+Y.sqrt <-  sqrt(Y)
+lm(Y.sqrt~X)
+```
+d. Plot the estimated regression line and the transformed data. Does the regression line appear
+to be a good fit to the transformed data?
+Yes, the regression line appears to be a great fit to the transformed data.
+```{r}
+plot(X, Y.sqrt)
+abline(lm(Y.sqrt~X))
+```
+e. Obtain the residuals and plot them against the fitted values. What do your plots show?
+This plot points to the error in the linear regression aligning with the differences between the expected and observed values. Additionally, since the sum of the residuals is zero it supports the use of the transformation for regression analysis.
+```{r}
+m1 <- lm(Y~X)
+m2 <- resid(m1)
+plot(Y.sqrt,m2)
+```
+f. Express the estimated regression function in the original units
+Y = 34.13X + 34.74
+```{r}
+lm(Y~X)
+```
+
+
+3.18. Production time. In a manufacturing study, the production times for III recent production
+runs were obtained. The table below lists for each run the production time in hours (Y) and the
+production lot size (X).
+```{r}
+production <- loadRData("/Users/lukegeel/Downloads/production_time_spring2021.RData")
+```
+a. Prepare a scatter plot of the data. Does a linear relation appear adequate here? Would a
+transformation on X or Y be more appropriate here? Why?
+A linear relation appears to be adeqate here but a transformation on X would be more approproate due to the outliers.
+```{r}
+X <- production$X
+Y <- production$Y
+plot(X,Y)
+```
+b. Use the transformation X' = sqrtX and obtain the estimated linear regression function for the transformed data.
+Y = 3.99sqrt(X) - 0.0318
+```{r}
+X.sqrt <- sqrt(X)
+lm(Y~X.sqrt)
+```
+
+c. Plot the estimated regression line and the transformed data. Does the regression line appear
+to be a good fit to the transformed data?
+Yes, the regression line appears to be a great fit for the data
+```{r}
+plot(X.sqrt,Y)
+abline(lm(Y~X.sqrt))
+```
+
+d. Obtain the residuals and plot them against the fitted values.  What do your plots show?
+This plot shows that when sqrt(x) is between 2 and 5 the model fits the data well but there are some outliers when sqrt(x) is 0 and greater than 5.
+```{r}
+m1 <- lm(Y~X)
+m2 <- resid(m1)
+plot(X.sqrt,m2)
+```
+e. Express the estimated regression function in the original units. 
+Y = 0.58X + 6.23
+```{r}
+lm(Y~X)
+```
+
+10.5. Refer to Brand preference Problem 6.5b.
+a. plot the Yi −b0 −b2Xi2 against Xi1 and Yi − b0 − b1Xi1 against Xi2, where b0, b1, and b2 are the estimated regression coefficients obtained by fitting a normal errors multiple linear regression model to the response Y with X1 and X2 as predictors
+```{r}
+brand <- loadRData("/Users/lukegeel/Downloads/brand_preference_spring2021.RData")
+X1 <- brand$X1
+X2 <- brand$X2
+Y <- brand$Y
+lm <- lm(Y~X1+X2)
+b0=34.788
+b1=4.638
+b2=4.812
+
+y1.hat = Y - b0 - b2*X2
+y2.hat = Y - b0 - b1*X1
+plot(X1, y1.hat)
+plot(X2, y2.hat)
+
+```
+b. Do your plots in part (a) suggest that the regression relatioLlships in the fitted regression function in problem 6.5b are inappropriate for any of the predictor variables'?  Explain.
+No. Based on the plots both predictor variables are appropriate for the function as the sum of residuals for both are zero.
+
+10.6. Refer to Grocery retailer problem 6.9.
+```{r}
+grocery <- loadRData("/Users/lukegeel/Downloads/grocery_spring2021.RData")
+
+```
+b.  plot the Yi −b0 −b2Xi2 against Xi1 and Yi − b0 − b1Xi1 against Xi2, where b0, b1, and b2 are the estimated regression coefficients obtained by fitting a normal errors multiple linear regression model to the response Y with X1 and X2 as predictors.
+```{r}
+X1 <- grocery$X1
+X2 <- grocery$X2
+Y <- grocery$Y
+lm <- lm(Y~X1+X2)
+lm
+b0=4.134e+03
+b1=5.590e-04
+b2 = 9.851e+00
+y1.hat = Y - b0 - b2*X2
+y2.hat = Y - b0 - b1*X1
+plot(X1, y1.hat)
+plot(X2, y2.hat)
+```
+c. Do your plots in part (a) suggest that the regression relationships in the fitted regressior
+function in part (a) are innapriopriate for any of the predictor variables? Explain. 
+Yes. Based on the plots it seems as though the zum of residuals for X2 is not zero meaning that it is inappropriate for the function.
+
+
+9.15. Kidney function. Creatinine clearance (Y) is an important measure of kidney function, but is difficult to obtain in a elinical ofllce setting because it requires 24-hour urine collection. To determine whether this measure can be predicted from some data that are easily available, a kidney specialist obtained the data th1lt fOllow for 33 male subjects. The predictor vari,lbles are serum creatinine concentration (Xt>, age (X2 ), and weight (X,;).
+```{r}
+kidney <- loadRData("/Users/lukegeel/Downloads/kidney_spring2021.RData")
+
+```
+c. Fit the multiple regression function containing the three predictor variables as first-order
+terms. Does it appear that all predictor variables should be retained?
+According to the results, X1 is the best at predicting and needs to be retained. X2 isn't as good as X1 but can still be retained however X3 doesn't do a good job and does not need to be retained.
+```{r}
+Y <- kidney$Y
+X1 <- kidney$X1
+X2 <- kidney$X2
+X3 <- kidney$X3
+m1 <- lm(Y~X1+X2+X3)
+anova(m1)
+summary(m1)
+summary(lm(Y~X1))
+summary(lm(Y~X2))
+summary(lm(Y~X3))
+```
+
+
+*10.21. Refer to Kidney function Problem 9.15 and the regression model fitted in part (c).
+b. Obtain the residuals and plot them seperatley against Y and each of the predictor variables.
+```{r}
+kidney <- loadRData("/Users/lukegeel/Downloads/kidney_spring2021.RData")
+Y <- kidney$Y
+X1 <- kidney$X1
+X2 <- kidney$X2
+X3 <- kidney$X3
+m1 <- lm(Y~X1+X2+X3)
+m2 <- resid(m1)
+plot(Y,m2)
+plot(X1,m2)
+plot(X2,m2)
+plot(X3,m2)
+```
+c. Plot Yi − b0 − b2Xi2 − b3Xi3 against Xi1, Yi − b0 − b1Xi1 − b3Xi3 against Xi2,
+and Yi − b0 − b1Xi1 − b2Xi2 against Xi3 where b0, b1, b2, and b3 are the estimated regression coefficients obtained by fitting a normal errors multiple linear regression model to the response Y with X1, X2, X3 as predictors.
+```{r}
+lm(Y~X1+X2+X3)
+b0=111.4487
+b1=-40.5661
+b2=-0.6561
+b3=0.833
+y1.hat = Y - b0 - b2*X2-b3*X3
+y2.hat = Y - b0 - b1*X1-b3*X3
+y3.hat = Y - b0 - b1*X1-b2*X2
+plot(X1, y1.hat)
+plot(X2, y2.hat)
+plot(X3,y3.hat)
+```
+d. Do the plots in parts (b) and (c) suggest that the regression model should be modified? 
+Based on the plots, I believe that the model would benefit if it's modified. Specifically, X1 seems to have some outliers so if we transformed X1 to say sqrt(X1) the model might be more accurate. Same can be said for the other predictors, just happens that X1 had the most intense outliers.
+
+
+*10.22. Refer to Kidney function Problems 9.15 and 10.21. Theoretical arguments suggest use of the following regression function: E(lnY) = B0 +B1lnX1+B2ln(140-X2)+B3lnX3
+a. Fit the regression function based on theoretical considerations.
+```{r}
+e=2.71828
+Yp=log(Y,e)
+X1p=log(X1,e)
+X2p=log(140-X2,e)
+X3p=log(X3,e)
+lm(Yp~X1p+X2p+X3p)
+
+```
+
+b. Obtain the residuals and plot them seperately against Y and each predictor variable in the fitted model.  Have the difficulties noted in Problem 10.21 now largely been eliminated?
+I am getting some errors with the transformations of the variables but from what I can tell yes, the difficulties from 10.21 have been largely eliminated.
+```{r}
+Yp=log(Y,e)
+X1p=log(X1,e)
+X2p=log(140-X2,e)
+X3p=log(X3,e)
+m1 <- lm(Yp~X1p+X2p+X3p)
+m2 <- resid(m1)
+#plot(Yp,m2)
+#plot(X1p,m2)
+#plot(X2p,m2)
+#plot(X3p,m2)
+```
+
+
+
+
+
+
+
+
+
+
